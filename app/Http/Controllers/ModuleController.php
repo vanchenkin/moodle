@@ -19,7 +19,7 @@ class ModuleController extends Controller
     public function create(Request $request)
     {
     	$name = $request->input('name');
-    	if(!Module::find($name)){
+    	if($name && !Module::find($name)){
     		Module::create(['name' => $name]);
     		return redirect()->route('tasks')->with('status', 'Модуль успешно добавлен!');
     	}else{

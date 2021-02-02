@@ -17,17 +17,25 @@ Route::get('/', 'MainController@index')->name('index');
 
 Route::group(['middleware' => 'auth'], function(){
 	Route::get('tests', 'TestController@index')->name('tests');
+	Route::get('test/{test}', 'TestController@test')->name('test');
 
 	Route::group(['middleware' => 'admin'], function(){
+		//tasks
 		Route::get('tasks', 'TaskController@index')->name('tasks');
-		Route::get('task/add/{id}', 'TaskController@create')->name('task_add');
+		Route::get('task/create/{module}', 'TaskController@create')->name('task_create');
+		Route::get('task/add/{module}', 'TaskController@add')->name('task_add');
 		Route::get('task/delete/{id}', 'TaskController@delete')->name('task_delete');
 		Route::get('module/create', 'ModuleController@index')->name('create_module');
 		Route::get('module/add', 'ModuleController@create')->name('module_add');
 		Route::get('module/delete/{id}', 'ModuleController@delete')->name('module_delete');
 
+		//groups
 		Route::get('groups', 'GroupController@index')->name('groups');
-		Route::get('edit_groups', 'GroupController@manage')->name('edit_groups');
+		Route::get('group/create', 'GroupController@create')->name('group_create');
+
+		//tests
+		Route::get('test/create/{group}', 'TestController@create')->name('test_create');
+		Route::get('test/add/{group}', 'TestController@add')->name('test_add');
 	});
 });
 

@@ -15,6 +15,22 @@ class TaskController extends Controller
         return view('pages.tasks', ['modules' => $modules]);
     }
 
+    public function create(Module $module)
+    {
+        return view('pages.create_task', ['module' => $module]);
+    }
+
+    public function add(Request $request, Module $module)
+    {
+        $text = $request->input('text');
+        $answer = $request->input('answer');
+        if($text && $answer){
+            Task::create(['text' => $text, 'answer' => $answer, 'module_id' => $module->id]);
+            return redirect()->route('tasks')->with('status', 'Задание успешно добавлено!');
+        }
+        return redirect()->route('tasks')->with('status', 'Ошибка!');
+    }
+
     public function delete(Request $request){
     	$tmp = Task::find($request->id);
     	if($tmp){

@@ -15,8 +15,11 @@ class CreateModuleTestTable extends Migration
     {
         Schema::create('module_test', function (Blueprint $table) {
             $table->id();
-            $table->integer('module_id');
-            $table->integer('test_id');
+            $table->bigInteger('module_id')->unsigned();
+            $table->bigInteger('test_id')->unsigned();
+            $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
+            $table->foreign('test_id')->references('id')->on('tests')->onDelete('cascade');
+            $table->integer('count');
             $table->timestamps();
         });
     }

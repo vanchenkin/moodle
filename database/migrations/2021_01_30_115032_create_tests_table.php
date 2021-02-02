@@ -16,9 +16,10 @@ class CreateTestsTable extends Migration
         Schema::create('tests', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->integer('duration');
+            $table->integer('group_id');
             $table->timestamps();
         });
     }

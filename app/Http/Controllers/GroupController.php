@@ -10,9 +10,10 @@ class GroupController extends Controller
 {
 	public function index()
 	{
-		$groups = Auth::user()->groups;
+		$groups = Group::all();
 		foreach($groups as $group){
 			$group->users = $group->users()->where('role', 'STUDENT')->get();
+			$group->admins = $group->users()->where('role', 'TEACHER')->get();
 		}
 		return view('pages.groups', ['groups' => $groups]);
 	}

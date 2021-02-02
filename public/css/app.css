@@ -10946,13 +10946,55 @@ a.text-dark:focus {
 
 .link {
   display: block;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 
 .red {
   color: #B82569;
 }
 
-.pdd {
+.mb {
   margin-bottom: 10px;
+}
+
+.task-textarea {
+  margin: 10px;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+label {
+  margin: 0 10px;
+}
+
+input {
+  margin: 0 10px;
+}
+
+.task-answer {
+  width: 40%;
+}
+
+.task-text {
+  width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tasks-task {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.div-input {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 

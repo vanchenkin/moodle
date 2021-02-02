@@ -9,15 +9,20 @@
 
                 <div class="card-body">
                     @if(Auth::user()->role != "TEACHER")
-                        <a class="link" href="{{route('edit_groups')}}">Изменять группы</a>
+                        <a class="link" href="{{route('edit_groups')}}">Добавить группу</a>
                     @endif
                     @foreach($groups as $group)
                         <div class="card">
                             <div class="card-header">Группа {{$group->name}}</div>
 
                             <div class="card-body">
+                                <div>Ученики:</div>
                                 @foreach($group->users as $id=>$user)
                                     <div class="group-user">{{$id+1}}. {{$user->name}} {{$user->surname}} {{$user->username}}</div>
+                                @endforeach
+                                <div>Преподаватели:</div>
+                                @foreach($group->admins as $id=>$user)
+                                    <div class="group-user">{{$user->name}} {{$user->surname}} {{$user->username}}</div>
                                 @endforeach
                             </div>
                         </div>

@@ -11,11 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
-        DB::table('groups')->truncate();
-        DB::table('group_user')->truncate();
-        DB::table('tasks')->truncate();
-        DB::table('modules')->truncate();
         DB::table('users')->insert([
             'name' => 'Владимир',
             'surname' => 'Новиков',

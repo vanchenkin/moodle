@@ -15,9 +15,11 @@ class CreateAttemptTaskTable extends Migration
     {
         Schema::create('attempt_task', function (Blueprint $table) {
             $table->id();
-            $table->integer('attempt_id');
-            $table->integer('task_id');
+            $table->bigInteger('attempt_id')->unsigned();
+            $table->bigInteger('task_id')->unsigned();
             $table->string('answer')->default('');
+            $table->foreign('attempt_id')->references('id')->on('attempts')->onDelete('cascade');
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
         });
     }

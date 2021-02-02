@@ -9,7 +9,7 @@
 
                 <div class="card-body">
                    <form action="{{ route('module_add') }}" method="GET">
-                        <label for="name">Имя модуля: </label><input name="name" type="text" placeholder="Введите название">
+                        <label for="name">Имя модуля: </label><input required id="name" name="name" type="text" placeholder="Введите название">
                         <input type="submit" value="Добавить">
                    </form>
                 </div>
