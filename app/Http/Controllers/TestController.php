@@ -42,6 +42,8 @@ class TestController extends Controller
 
 	public function add(Request $request, Group $group)
 	{
+		if(Auth::user()->role == 'TEACHER' && !Auth::user()->groups()->find($group))
+			return redirect()->route('tests')->with('status', 'Ошибка 6!');
 		$validator = Validator::make($request->all(),
 		    [
 		        'name' => 'required',
@@ -52,7 +54,7 @@ class TestController extends Controller
 		    ]
 		);
 		if ($validator->fails())
-		    return redirect()->route('tests')->with('status', $validator->errors());
+		    return redirect()->route('test_create', $group)->with('status', $validator->errors());
 		$start = Carbon::parse($request->input('start'));
 		$end = Carbon::parse($request->input('end'));
 		$modules = Module::with('tasks')->find($request->input('modules'));
@@ -88,6 +90,9 @@ class TestController extends Controller
 		//2 - started
 		//3 - ended
 		//4 - ended globally
+		//5 - ended globally not passed
+		if(Auth::user()->role == 'TEACHER' && !Auth::user()->groups()->find($test->group))
+			return view('denied');
 		if(Auth::user()->role == 'STUDENT'){
 			$attempt = $test->attempts()->where('user_id', Auth::user()->id)->first();
 			$status = 0;
@@ -97,7 +102,7 @@ class TestController extends Controller
 			if($test->start->lessThan(Carbon::now()))
 				$status = 1;
 			if($test->end->lessThan(Carbon::now()))
-				$status = 4;
+				$status = 5;
 			if($attempt){
 				$start = $attempt->start;
 				$tasks = $attempt->tasks;
@@ -122,7 +127,22 @@ class TestController extends Controller
 			}
 			return view('pages.test', ['test' => $test, 'attempt' => $attempt, 'status' => $status, 'tasks' => $tasks, 'remain' => $remain, 'sum' => $sum, 'count' => $test->count()]);
 		}else{
-			return view('pages.admin_test', ['test' => $test]);
+			$users = $test->group->users()->where('role', 'STUDENT')->get();
+			$count = $test->count();
+			foreach($users as $user){
+				$attempt = $user->attempts()->where('test_id', $test->id)->first();
+				if($attempt){
+					$tasks = $attempt->tasks;
+					$sum = 0;
+					foreach($tasks as $task)
+						if($task->answer == $task->pivot->answer)
+							$sum++;
+				}else{
+					$sum = -1;
+				}
+				$user->mark = $sum;
+			}
+			return view('pages.admin_test', ['test' => $test, 'users' => $users, 'count' => $count]);
 		}
 	}
 
@@ -140,10 +160,11 @@ class TestController extends Controller
 				$attempt->save();
 				foreach($test->modules as $module){
 					$tasks = $module->tasks->all();
-					$nums = array(array_rand($tasks, $module->pivot->count));
-					foreach($nums as $num){
+					$nums = array_rand($tasks, $module->pivot->count);
+					if(!is_array($nums))
+						$nums = array($nums);
+					foreach($nums as $num)
 						$attempt->tasks()->attach($tasks[$num]);
-					}
 				}
 				return redirect()->route('test', $test)->with('status', 'Вы начали тест!');
 			}
@@ -156,6 +177,7 @@ class TestController extends Controller
 		if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now()) && Auth::user()->attempts()->find($attempt)){
 			$answers = $request->input('answers');
 			foreach($answers as $id=>$answer){
+				if($answer == null) $answer = '';
 				$task = $attempt->tasks()->find($id);
 				$task->pivot->answer = $answer;
 				$task->pivot->save();

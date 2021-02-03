@@ -14,7 +14,7 @@
                         </div>
                     @endif
                     @foreach($groups as $group)
-                        <div class="card">
+                        <div class="card pdd">
                             <div class="card-header">Группа {{$group->name}}</div>
                             @if(Auth::user()->role != "STUDENT")
                                 <a class="link" href="{{route('test_create', $group)}}">Добавить тест</a>

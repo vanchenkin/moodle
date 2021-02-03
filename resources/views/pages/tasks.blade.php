@@ -22,7 +22,7 @@
                                 @foreach($module->tasks as $id=>$task)
                                     <div class="tasks-task">
                                         <div class="task-text" style="white-space: nowrap;">{{$id+1 }}. {{ $task->text }} </div>
-                                        <a class="tasks-delete red confirm link" href="{{route('task_delete', $task->id)}}">Удалить задание</a>
+                                        <a class="tasks-delete red confirm" href="{{route('task_delete', $task->id)}}">Удалить задание</a>
                                     </div>
                                 @endforeach
                             </div>

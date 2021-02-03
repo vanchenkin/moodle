@@ -7,6 +7,11 @@
             <div class="card">
                 <div class="card-header">Создание теста для группы {{ $group->name }}</div>
                 <div class="card-body">
+                    @if(Session::has('status'))
+                        <div class="alert alert-info">
+                            {{ Session::get('status')}}
+                        </div>
+                    @endif
                    <form action="{{ route('test_add', $group) }}" method="POST">
                     @csrf
                         <div class="div-input"><label for="name">Название: </label><input required id="name" name="name" type="text" placeholder="Название"></div>

@@ -14,6 +14,7 @@ $(document).ready(function() {
 			e.target.style = "white-space: nowrap;";
 		}
 	);
+
     if($("#remain").length){
 		var r = $("#remain").attr("remain");
 		var x = setInterval(function() {
@@ -25,9 +26,9 @@ $(document).ready(function() {
         	seconds = seconds < 10 ? "0" + seconds : seconds;
         	hours = hours < 10 ? "0" + hours : hours;
 	    	$("#remain").html(hours + "ч " + minutes + "м " + seconds + "с ");
-	    	if (r < 0) {
+	    	if (r <= 0) {
 				clearInterval(x);
-				$("#test-form").sumbit();
+				$("#test-form").submit();
 			}
 		}, 100);
     }

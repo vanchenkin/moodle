@@ -22,7 +22,7 @@
                     	<a class="link" href="{{ route('test_start', $test->id) }}">Начать</a>
                     @elseif($status == 2)
                     	<div class="">Осталось: <span id="remain" remain="{{ $remain }}"></span></div>
-                    	<form id="test-form" action="{{ route('test_end', $attempt) }}" method="GET">
+                    	<form id="test-form" action="{{ route('test_end', $attempt) }}" method="POST">
                     		@csrf
 	                    	@foreach($tasks as $task)
 	                    		<div class="task">
@@ -45,6 +45,8 @@
                     			<div>Оценка: {{ $task->mark }} из 1</div>
                     		</div>
                     	@endforeach
+                    @elseif($status == 5)
+                    	<div>Тестирование завершено. Вы его не писали</div>
                     @endif
                 </div>
             </div>

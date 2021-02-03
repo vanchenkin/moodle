@@ -8,11 +8,15 @@
                 <div class="card-header">Регистрация</div>
 
                 <div class="card-body">
+                    @if(Session::has('status'))
+                        <div class="alert alert-info">
+                            {{ Session::get('status')}}
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
-
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">Имя</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-right">ФИО</label>
 
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" autofocus>
@@ -26,21 +30,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="surname" class="col-md-4 col-form-label text-md-right">Фамилия</label>
-
-                            <div class="col-md-6">
-                                <input id="surname" type="text" class="form-control @error('surname') is-invalid @enderror" name="surname" required autocomplete="surname" autofocus>
-
-                                @error('surname')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="username" class="col-md-4 col-form-label text-md-right">Имя пользователя</label>
+                            <label for="username" class="col-md-4 col-form-label text-md-right">Логин</label>
 
                             <div class="col-md-6">
                                 <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" required autocomplete="username" autofocus>

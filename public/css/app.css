@@ -10946,16 +10946,11 @@ a.text-dark:focus {
 
 .link {
   display: block;
-  margin-left: 10px;
-  margin-top: 10px;
+  margin: 10px;
 }
 
 .red {
   color: #B82569;
-}
-
-.mb {
-  margin-bottom: 10px;
 }
 
 .task-textarea {
@@ -11004,5 +10999,9 @@ input {
 
 .task {
   margin: 20px 0;
+}
+
+.pdd {
+  margin-bottom: 10px;
 }
 

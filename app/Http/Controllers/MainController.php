@@ -13,12 +13,8 @@ class MainController extends Controller
 			$role = Auth::user()->role;
 			if($role == 'STUDENT')
 				return view('student');
-			elseif($role == 'TEACHER')
-				return view('teacher');
-			elseif($role == 'ADMIN')
+			else
 				return view('admin');
-			elseif($role == 'SYSTEM')
-				return view('system');
 		}
 		return view('index');
 	}

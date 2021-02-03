@@ -32,9 +32,9 @@ class TaskController extends Controller
     }
 
     public function delete(Request $request){
-    	$tmp = Task::find($request->id);
-    	if($tmp){
-	    	$tmp->delete();
+    	$task = Task::find($request->id);
+    	if($task){
+	    	$task->delete();
 	    	return redirect()->route('tasks')->with('status', 'Задание удалено!');
 	    }
 	    return redirect()->route('tasks')->with('status', 'Ошибка!');

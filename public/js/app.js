@@ -18104,9 +18104,9 @@ $(document).ready(function () {
       hours = hours < 10 ? "0" + hours : hours;
       $("#remain").html(hours + "ч " + minutes + "м " + seconds + "с ");
 
-      if (r < 0) {
+      if (r <= 0) {
         clearInterval(x);
-        $("#test-form").sumbit();
+        $("#test-form").submit();
       }
     }, 100);
   }

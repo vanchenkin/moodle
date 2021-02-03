@@ -6,7 +6,6 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">Нет доступа</div>
-
                 <div class="card-body">
                     У вас нет доступа к этой странице!
                 </div>

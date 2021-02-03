@@ -8,6 +8,11 @@
                 <div class="card-header">Добавление задания в модуль {{ $module->name }}</div>
 
                 <div class="card-body">
+                    @if(Session::has('status'))
+                        <div class="alert alert-info">
+                            {{ Session::get('status')}}
+                        </div>
+                    @endif
                    <form action="{{ route('task_add', $module) }}" method="POST">
                         @csrf
                         <div><label for="text">Текст задания: </label></div>

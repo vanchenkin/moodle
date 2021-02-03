@@ -16,12 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'MainController@index')->name('index');
 
 Route::group(['middleware' => 'auth'], function(){
+	//tests
 	Route::get('tests', 'TestController@index')->name('tests');
 	Route::get('test/{test}', 'TestController@test')->name('test');
 	Route::get('test/start/{test}', 'TestController@start')->name('test_start');
-	Route::get('test/end/{attempt}', 'TestController@end')->name('test_end');
+	Route::post('test/end/{attempt}', 'TestController@end')->name('test_end');
 
-	Route::group(['middleware' => 'admin'], function(){
+	Route::group(['middleware' => 'teacher'], function(){
 		//tasks
 		Route::get('tasks', 'TaskController@index')->name('tasks');
 		Route::get('task/create/{module}', 'TaskController@create')->name('task_create');
@@ -33,11 +34,22 @@ Route::group(['middleware' => 'auth'], function(){
 
 		//groups
 		Route::get('groups', 'GroupController@index')->name('groups');
-		Route::get('group/create', 'GroupController@create')->name('group_create');
 
 		//tests
 		Route::get('test/create/{group}', 'TestController@create')->name('test_create');
 		Route::post('test/add/{group}', 'TestController@add')->name('test_add');
+		Route::group(['middleware' => 'admin'], function(){
+			//groups
+			Route::get('group/create', 'GroupController@create')->name('group_create');
+			Route::post('group/add', 'GroupController@add')->name('group_add');
+			Route::get('group/{group}/update', 'GroupController@update')->name('group_update');
+			Route::post('group/{group}/change', 'GroupController@change')->name('group_change');
+
+			//users
+			Route::get('user/create', 'UserController@create')->name('user_create');
+			Route::post('user/add', 'UserController@add')->name('user_add');
+			Route::get('users', 'UserController@index')->name('users');
+		});
 	});
 });
 

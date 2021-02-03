@@ -8,11 +8,15 @@
                 <div class="card-header">Вход</div>
 
                 <div class="card-body">
+                    @if(Session::has('status'))
+                        <div class="alert alert-info">
+                            {{ Session::get('status')}}
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-
                         <div class="form-group row">
-                            <label for="username" class="col-md-4 col-form-label text-md-right">Имя пользователя</label>
+                            <label for="username" class="col-md-4 col-form-label text-md-right">Логин</label>
 
                             <div class="col-md-6">
                                 <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" required autocomplete="username" autofocus>
