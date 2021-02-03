@@ -8,6 +8,7 @@ use Validator;
 use App\Test;
 use App\Group;
 use App\Module;
+use App\Attempt;
 use Carbon\Carbon;
 
 class TestController extends Controller
@@ -19,7 +20,14 @@ class TestController extends Controller
 		else
 			$groups = Auth::user()->groups;
 		foreach($groups as $group){
-			$group->tests = $group->tests;
+			foreach($group->tests as $test){
+				if($test->end->lessThan(Carbon::now()))
+					$test->status = "Завершён";
+				else if($test->start->lessThan(Carbon::now()))
+					$test->status = "Идёт";
+				else
+					$test->status = "Не начат";
+			}
 		}
 		return view('pages.tests', ['groups' => $groups]);
 	}
@@ -74,10 +82,88 @@ class TestController extends Controller
 
 	public function test(Test $test)
 	{
+		//status
+		//0 - not started globally
+		//1 - not started
+		//2 - started
+		//3 - ended
+		//4 - ended globally
 		if(Auth::user()->role == 'STUDENT'){
-			return view('pages.test', ['test' => $test]);
+			$attempt = $test->attempts()->where('user_id', Auth::user()->id)->first();
+			$status = 0;
+			$tasks = null;
+			$remain = 0;
+			$sum = 0;
+			if($test->start->lessThan(Carbon::now()))
+				$status = 1;
+			if($test->end->lessThan(Carbon::now()))
+				$status = 4;
+			if($attempt){
+				$start = $attempt->start;
+				$tasks = $attempt->tasks;
+				$end = $attempt->start->addMinutes($test->duration)->minimum($test->end);
+				if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now())){
+					$status = 2;
+					$remain = $end->diffInSeconds(Carbon::now());
+				}else if($test->end->greaterThan(Carbon::now())){
+					$status = 3;
+				}else{
+					foreach($tasks as $task){
+						if($task->answer == $task->pivot->answer){
+							$task->mark = 1;
+							$sum++;
+						}
+						else
+							$task->mark = 0;
+						$task->yanswer = $task->pivot->answer;
+					}
+					$status = 4;
+				}
+			}
+			return view('pages.test', ['test' => $test, 'attempt' => $attempt, 'status' => $status, 'tasks' => $tasks, 'remain' => $remain, 'sum' => $sum, 'count' => $test->count()]);
 		}else{
 			return view('pages.admin_test', ['test' => $test]);
 		}
+	}
+
+	public function start(Test $test)
+	{
+		if(Auth::user()->role == 'STUDENT' && $test->attempts()->where('user_id', Auth::user()->id)->count() == 0 && $test->start->lessThan(Carbon::now()) && $test->end->greaterThan(Carbon::now())){
+			$can = false;
+			foreach(Auth::user()->groups as $group)
+				if($group->tests()->find($test)) $can = true;
+			if($can){
+				$attempt = new Attempt;
+				$attempt->user_id = Auth::user()->id;
+				$attempt->test_id = $test->id;
+				$attempt->start = Carbon::now();
+				$attempt->save();
+				foreach($test->modules as $module){
+					$tasks = $module->tasks->all();
+					$nums = array(array_rand($tasks, $module->pivot->count));
+					foreach($nums as $num){
+						$attempt->tasks()->attach($tasks[$num]);
+					}
+				}
+				return redirect()->route('test', $test)->with('status', 'Вы начали тест!');
+			}
+		}
+	}
+
+	public function end(Request $request, Attempt $attempt){
+		$start = $attempt->start;
+		$end = $attempt->start->addMinutes($attempt->test->duration)->minimum($attempt->test->end);
+		if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now()) && Auth::user()->attempts()->find($attempt)){
+			$answers = $request->input('answers');
+			foreach($answers as $id=>$answer){
+				$task = $attempt->tasks()->find($id);
+				$task->pivot->answer = $answer;
+				$task->pivot->save();
+			}
+			$attempt->end = Carbon::now();
+			$attempt->save();
+			return redirect()->route('test', $attempt->test)->with('status', 'Вы завершили тест!');
+		}
+		return redirect()->route('test', $attempt->test)->with('status', 'Тест уже завершён!');
 	}
 }

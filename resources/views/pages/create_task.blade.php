@@ -8,7 +8,8 @@
                 <div class="card-header">Добавление задания в модуль {{ $module->name }}</div>
 
                 <div class="card-body">
-                   <form action="{{ route('task_add', $module) }}" method="GET">
+                   <form action="{{ route('task_add', $module) }}" method="POST">
+                        @csrf
                         <div><label for="text">Текст задания: </label></div>
                         <div class="task-textarea">
                             <textarea class="" id="text" name="text" placeholder="Введите текст задания" required></textarea>

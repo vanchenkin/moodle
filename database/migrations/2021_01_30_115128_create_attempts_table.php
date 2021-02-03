@@ -17,7 +17,8 @@ class CreateAttemptsTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('test_id');
-            $table->dateTime('start_time');
+            $table->dateTime('start');
+            $table->dateTime('end')->nullable()->default(null);
             $table->timestamps();
         });
     }

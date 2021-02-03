@@ -33,4 +33,9 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Group');
     }
 
+    public function attempts()
+    {
+        return $this->hasMany('App\Attempt');
+    }
+
 }

@@ -7,10 +7,11 @@
             <div class="card">
                 <div class="card-header">Создание теста для группы {{ $group->name }}</div>
                 <div class="card-body">
-                   <form action="{{ route('test_add', $group) }}" method="GET">
+                   <form action="{{ route('test_add', $group) }}" method="POST">
+                    @csrf
                         <div class="div-input"><label for="name">Название: </label><input required id="name" name="name" type="text" placeholder="Название"></div>
-                        <div class="div-input"><label for="start">Время начала: </label><input required id="start" type="datetime-local" name="start" value="{{ Carbon\Carbon::now()->format("Y-m-d\Th:m") }}"></div>
-                        <div class="div-input"><label for="end">Время окончания: </label><input required id="end" type="datetime-local" name="end" value="{{ Carbon\Carbon::now()->format("Y-m-d\Th:m") }}"></div>
+                        <div class="div-input"><label for="start">Время начала: </label><input required id="start" type="datetime-local" name="start" value="{{ Carbon\Carbon::now()->format("Y-m-d\TH:i") }}"></div>
+                        <div class="div-input"><label for="end">Время окончания: </label><input required id="end" type="datetime-local" name="end" value="{{ Carbon\Carbon::now()->format("Y-m-d\TH:i") }}"></div>
                         <div class="div-input"><label for="duration">Продолжительность в минутах: </label><input required id="duration" name="duration" type="text" placeholder="Продолжительность"></div>
                         <div class="div-input">Модули:</div>
                         @foreach($modules as $module)

@@ -9,4 +9,16 @@ class Attempt extends Model
 	protected $fillable = [
         'user_id', 'test_id', 'start', 'end'
     ];
+    protected $casts = [
+        'start'  => 'datetime',
+        'end'  => 'datetime',
+    ];
+    public function tasks()
+    {
+        return $this->belongsToMany('App\Task')->withPivot('answer');
+    }
+    public function test()
+    {
+        return $this->belongsTo('App\Test');
+    }
 }

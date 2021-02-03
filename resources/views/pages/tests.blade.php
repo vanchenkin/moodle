@@ -22,7 +22,7 @@
                             <div class="card-body">
                                 <div>Тесты:</div>
                                 @foreach($group->tests as $id=>$test)
-                                    <a style="display: block;" class="group-test" href="{{route('test', $test)}}">{{$test->name}}</a>
+                                    <a style="display: block;" class="group-test" href="{{route('test', $test)}}">{{$test->name}} Статус: {{ $test->status }}</a>
                                 @endforeach
                             </div>
                         </div>
