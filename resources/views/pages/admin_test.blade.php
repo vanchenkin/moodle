@@ -19,12 +19,13 @@
                     <div class="">Результаты:</div>
                     @foreach($users as $user)
                         <div class="user">{{ $user->name }} {{ $user->username }} Результат:
-                        @if($user->mark == -1)
-                        	не писал
-                        @else
-							{{ $user->mark }} из {{ $count }}
-                        @endif
-                     </div>
+                            @if($user->mark == -1)
+                            	не писал
+                            @else
+    							{{ $user->mark }} из {{ $count }}
+                                <a class="" href="{{ route('attempt', ['test' => $test->id, 'user' => $user->id]) }}">Просмотр</a>
+                            @endif
+                        </div>
                     @endforeach
                 </div>
             </div>

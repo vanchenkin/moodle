@@ -29,6 +29,7 @@
                                 @foreach($group->admins as $id=>$user)
                                     <div class="group-user">{{$user->name}} {{$user->username}}</div>
                                 @endforeach
+                                <a class="link red" href="{{route('group_delete', $group->id)}}">Удалить группу</a>
                             </div>
                         </div>
                     @endforeach

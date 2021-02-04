@@ -17,8 +17,6 @@ class CreateModuleTestTable extends Migration
             $table->id();
             $table->bigInteger('module_id')->unsigned();
             $table->bigInteger('test_id')->unsigned();
-            $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
-            $table->foreign('test_id')->references('id')->on('tests')->onDelete('cascade');
             $table->integer('count');
             $table->timestamps();
         });

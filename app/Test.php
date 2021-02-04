@@ -27,8 +27,7 @@ class Test extends Model
     }
     public function count(){
         $sum = 0;
-        $this->modules();
-        foreach($this->modules as $module)
+        foreach($this->modules()->withTrashed()->get() as $module)
             $sum += $module->pivot->count;
         return $sum;
     }

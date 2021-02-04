@@ -9,6 +9,7 @@ use App\Test;
 use App\Group;
 use App\Module;
 use App\Attempt;
+use App\User;
 use Carbon\Carbon;
 
 class TestController extends Controller
@@ -79,7 +80,7 @@ class TestController extends Controller
             	$test->modules()->attach($module, ['count' => $count[$module->id]]);
             return redirect()->route('tests')->with('status', 'Тест успешно добавлен!');
         }
-        return redirect()->route('tests')->with('status', 'Ошибка 4!');
+        return redirect()->route('tests')->with('status', 'Начало позже конца!');
 	}
 
 	public function test(Test $test)
@@ -91,7 +92,7 @@ class TestController extends Controller
 		//3 - ended
 		//4 - ended globally
 		//5 - ended globally not passed
-		if(Auth::user()->role == 'TEACHER' && !Auth::user()->groups()->find($test->group))
+		if((Auth::user()->role == 'TEACHER' || Auth::user()->role == 'STUDENT') && !Auth::user()->groups()->find($test->group))
 			return view('denied');
 		if(Auth::user()->role == 'STUDENT'){
 			$attempt = $test->attempts()->where('user_id', Auth::user()->id)->first();
@@ -105,7 +106,7 @@ class TestController extends Controller
 				$status = 5;
 			if($attempt){
 				$start = $attempt->start;
-				$tasks = $attempt->tasks;
+				$tasks = $attempt->tasks()->withTrashed()->get();
 				$end = $attempt->start->addMinutes($test->duration)->minimum($test->end);
 				if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now())){
 					$status = 2;
@@ -132,7 +133,7 @@ class TestController extends Controller
 			foreach($users as $user){
 				$attempt = $user->attempts()->where('test_id', $test->id)->first();
 				if($attempt){
-					$tasks = $attempt->tasks;
+					$tasks = $attempt->tasks()->withTrashed()->get();
 					$sum = 0;
 					foreach($tasks as $task)
 						if($task->answer == $task->pivot->answer)
@@ -187,5 +188,25 @@ class TestController extends Controller
 			return redirect()->route('test', $attempt->test)->with('status', 'Вы завершили тест!');
 		}
 		return redirect()->route('test', $attempt->test)->with('status', 'Тест уже завершён!');
+	}
+
+	public function attempt(Request $request, Test $test, User $user){
+		$attempt = $test->attempts()->where('user_id', $user->id)->first();
+		$tasks = null;
+		$sum = 0;
+		if($attempt){
+			$tasks = $attempt->tasks()->withTrashed()->get();
+			foreach($tasks as $task){
+				if($task->answer == $task->pivot->answer){
+					$task->mark = 1;
+					$sum++;
+				}
+				else
+					$task->mark = 0;
+				$task->yanswer = $task->pivot->answer;
+			}
+			return view('pages.attempt', ['test' => $test, 'user' => $user, 'tasks' => $tasks, 'attempt' => $attempt, 'sum' => $sum, 'count' => $test->count()]);
+		}
+		return redirect()->route('test', $test)->with('status', 'Попытка не найдена!');
 	}
 }

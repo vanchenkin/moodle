@@ -18,8 +18,6 @@ class CreateAttemptTaskTable extends Migration
             $table->bigInteger('attempt_id')->unsigned();
             $table->bigInteger('task_id')->unsigned();
             $table->string('answer')->default('');
-            $table->foreign('attempt_id')->references('id')->on('attempts')->onDelete('cascade');
-            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -17,8 +17,9 @@ class CreateTasksTable extends Migration
             $table->id();
             $table->text('text');
             $table->string('answer');
-            $table->integer('module_id');
+            $table->bigInteger('module_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

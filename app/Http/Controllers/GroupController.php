@@ -56,4 +56,9 @@ class GroupController extends Controller
             }
         return redirect()->route('groups')->with('status', 'Группа успешно изменена!');
     }
+
+    public function delete(Request $request, Group $group){
+        $group->delete();
+        return redirect()->route('users')->with('status', 'Группа удалена!');
+    }
 }

@@ -42,13 +42,18 @@ Route::group(['middleware' => 'auth'], function(){
 			//groups
 			Route::get('group/create', 'GroupController@create')->name('group_create');
 			Route::post('group/add', 'GroupController@add')->name('group_add');
+			Route::get('group/delete/{group}', 'GroupController@delete')->name('group_delete');
 			Route::get('group/{group}/update', 'GroupController@update')->name('group_update');
 			Route::post('group/{group}/change', 'GroupController@change')->name('group_change');
 
 			//users
 			Route::get('user/create', 'UserController@create')->name('user_create');
 			Route::post('user/add', 'UserController@add')->name('user_add');
+			Route::get('user/delete/{user}', 'UserController@delete')->name('user_delete');
 			Route::get('users', 'UserController@index')->name('users');
+			
+			//tests
+			Route::get('attempt/{test}/{user}', 'TestController@attempt')->name('attempt');
 		});
 	});
 });

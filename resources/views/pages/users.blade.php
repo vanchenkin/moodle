@@ -14,7 +14,7 @@
                     @endif
                     <a class="link" href="{{route('user_create')}}">Зарегистрировать пользователя</a>
                     @foreach($users as $user)
-                        <div>{{$user->name}} {{$user->username}} {{ $user->role }}</div>
+                        <div>{{$user->name}} {{$user->username}} {{ $user->role }} <a class="red" href="{{route('user_delete', $user->id)}}">Удалить</a></div>
                     @endforeach
                 </div>
             </div>

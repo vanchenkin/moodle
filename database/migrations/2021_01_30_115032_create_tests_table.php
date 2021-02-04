@@ -19,7 +19,7 @@ class CreateTestsTable extends Migration
             $table->dateTime('start');
             $table->dateTime('end');
             $table->integer('duration');
-            $table->integer('group_id');
+            $table->bigInteger('group_id')->unsigned();
             $table->timestamps();
         });
     }

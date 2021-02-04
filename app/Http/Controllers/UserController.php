@@ -42,4 +42,9 @@ class UserController extends Controller
     		return redirect()->route('user_create')->with('status', 'Пользователь с таким логином уже существует!');
     	}
     }
+
+    public function delete(Request $request, User $user){
+        $user->delete();
+        return redirect()->route('users')->with('status', 'Пользователь удален!');
+    }
 }

@@ -29,7 +29,7 @@
                                 <label for="users-{{$user->id}}">{{$user->name}} {{$user->username}}</label>
                             </div>
                         @endforeach
-                        <input type="submit" value="Обновить">
+                        <div class="div-input"><input type="submit" value="Обновить"></div>
                    </form>
                 </div>
             </div>
