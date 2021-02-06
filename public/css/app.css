@@ -10975,7 +10975,7 @@ input {
 }
 
 .task-text {
-  width: 70%;
+  width: 50%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -11003,5 +11003,9 @@ input {
 
 .pdd {
   margin-bottom: 10px;
+}
+
+.tasks-delete {
+  margin: 0 5px;
 }
 

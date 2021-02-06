@@ -13,20 +13,30 @@
                             {{ Session::get('status')}}
                         </div>
                     @endif
-                    <a class="link" href="{{route('create_module')}}">Добавить модуль</a>
+                    @if(Auth::user()->role != "ADMIN")
+                        <a class="link" href="{{route('module_create')}}">Добавить модуль</a>
+                    @endif
                     @foreach($modules as $module)
                         <div class="card pdd">
                             <div class="card-header">Модуль {{$module->name}}</div>
-                            <a class="tasks-addtask link" href="{{route('task_create', $module)}}">Добавить задание</a>
+                            @if(Auth::user()->role != "ADMIN")
+                                <a class="tasks-addtask link" href="{{route('task_create', $module)}}">Добавить задание</a>
+                            @endif
                             <div class="card-body">
                                 @foreach($module->tasks as $id=>$task)
                                     <div class="tasks-task">
                                         <div class="task-text" style="white-space: nowrap;">{{$id+1 }}. {{ $task->text }} </div>
-                                        <a class="tasks-delete red confirm" href="{{route('task_delete', $task->id)}}">Удалить задание</a>
+                                        <a class="tasks-delete" href="{{route('task', $task)}}">Смотреть</a>
+                                        @if(Auth::user()->role != "ADMIN")
+                                            <a class="tasks-delete" href="{{route('task_update', $task)}}">Изменить задание</a>
+                                            <a class="tasks-delete red confirm" href="{{route('task_delete', $task->id)}}">Удалить задание</a>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
-                            <a class="tasks-addtask red confirm link" href="{{route('module_delete', $module->id)}}">Удалить модуль</a>
+                            @if(Auth::user()->role != "ADMIN")
+                                <a class="tasks-addtask red confirm link" href="{{route('module_delete', $module->id)}}">Удалить модуль</a>
+                            @endif
                         </div>
                     @endforeach
                 </div>

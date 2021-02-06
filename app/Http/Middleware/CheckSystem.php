@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckTeacher
+class CheckSystem
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,7 @@ class CheckTeacher
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user()->role == 'ADMIN' || $request->user()->role == 'STUDENT') {
+        if ($request->user()->role != 'SYSTEM') {
             return redirect('denied');
         }
         return $next($request);

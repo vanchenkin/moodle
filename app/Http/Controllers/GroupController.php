@@ -31,7 +31,7 @@ class GroupController extends Controller
     		Group::create(['name' => $name]);
     		return redirect()->route('groups')->with('status', 'Группа успешно добавлена!');
     	}else{
-    		return redirect()->route('groups')->with('status', 'Ошибка!');
+    		return redirect()->route('groups')->with('status', 'Пустое имя!');
     	}
     }
 

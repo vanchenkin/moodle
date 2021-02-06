@@ -20,7 +20,9 @@
                             <div class="card-header">Группа {{$group->name}}</div>
 
                             <div class="card-body">
-                                <a class="link" href="{{route('group_update', $group->id)}}">Добавить/удалить участников</a>
+                                @if(Auth::user()->role == "SYSTEM")
+                                    <a class="link" href="{{route('group_update', $group->id)}}">Добавить/удалить участников</a>
+                                @endif
                                 <div>Ученики:</div>
                                 @foreach($group->users as $id=>$user)
                                     <div class="group-user">{{$id+1}}. {{$user->name}} {{$user->username}}</div>
@@ -29,7 +31,9 @@
                                 @foreach($group->admins as $id=>$user)
                                     <div class="group-user">{{$user->name}} {{$user->username}}</div>
                                 @endforeach
-                                <a class="link red" href="{{route('group_delete', $group->id)}}">Удалить группу</a>
+                                @if(Auth::user()->role == "SYSTEM")
+                                    <a class="link red confirm" href="{{route('group_delete', $group->id)}}">Удалить группу</a>
+                                @endif
                             </div>
                         </div>
                     @endforeach

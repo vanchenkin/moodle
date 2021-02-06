@@ -18,6 +18,10 @@
                         <div class="div-input"><label for="start">Время начала: </label><input required id="start" type="datetime-local" name="start" value="{{ Carbon\Carbon::now()->format("Y-m-d\TH:i") }}"></div>
                         <div class="div-input"><label for="end">Время окончания: </label><input required id="end" type="datetime-local" name="end" value="{{ Carbon\Carbon::now()->format("Y-m-d\TH:i") }}"></div>
                         <div class="div-input"><label for="duration">Продолжительность в минутах: </label><input required id="duration" name="duration" type="text" placeholder="Продолжительность"></div>
+                        <div class="div-input">
+                            <input class="checkbox" id="fast_result" type="checkbox" name="fast_result">
+                            <label for="fast_result">Результат сразу после завершения</label>
+                        </div>
                         <div class="div-input">Модули:</div>
                         @foreach($modules as $module)
                             <div class="div-input">

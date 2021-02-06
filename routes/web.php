@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('denied', 'MainController@denied')->name('denied');
+
 Route::get('/', 'MainController@index')->name('index');
 
 Route::group(['middleware' => 'auth'], function(){
@@ -22,38 +24,41 @@ Route::group(['middleware' => 'auth'], function(){
 	Route::get('test/start/{test}', 'TestController@start')->name('test_start');
 	Route::post('test/end/{attempt}', 'TestController@end')->name('test_end');
 
-	Route::group(['middleware' => 'teacher'], function(){
-		//tasks
+	Route::group(['middleware' => 'admin'], function(){
 		Route::get('tasks', 'TaskController@index')->name('tasks');
-		Route::get('task/create/{module}', 'TaskController@create')->name('task_create');
-		Route::post('task/add/{module}', 'TaskController@add')->name('task_add');
-		Route::get('task/delete/{id}', 'TaskController@delete')->name('task_delete');
-		Route::get('module/create', 'ModuleController@index')->name('create_module');
-		Route::post('module/add', 'ModuleController@create')->name('module_add');
-		Route::get('module/delete/{id}', 'ModuleController@delete')->name('module_delete');
-
-		//groups
 		Route::get('groups', 'GroupController@index')->name('groups');
+		Route::get('attempt/{test}/{user}', 'TestController@attempt')->name('attempt');
+		Route::get('task/{task}', 'TaskController@task')->name('task');
+		Route::group(['middleware' => 'teacher'], function(){
+			//tasks
 
-		//tests
-		Route::get('test/create/{group}', 'TestController@create')->name('test_create');
-		Route::post('test/add/{group}', 'TestController@add')->name('test_add');
-		Route::group(['middleware' => 'admin'], function(){
-			//groups
-			Route::get('group/create', 'GroupController@create')->name('group_create');
-			Route::post('group/add', 'GroupController@add')->name('group_add');
-			Route::get('group/delete/{group}', 'GroupController@delete')->name('group_delete');
-			Route::get('group/{group}/update', 'GroupController@update')->name('group_update');
-			Route::post('group/{group}/change', 'GroupController@change')->name('group_change');
+			Route::get('task/create/{module}', 'TaskController@create')->name('task_create');
+			Route::post('task/add/{module}', 'TaskController@add')->name('task_add');
+			Route::get('task/update/{task}', 'TaskController@update')->name('task_update');
+			Route::post('task/change/{task}', 'TaskController@change')->name('task_change');
+			Route::get('task/delete/{id}', 'TaskController@delete')->name('task_delete');
+			Route::get('module/create', 'ModuleController@index')->name('module_create');
+			Route::post('module/add', 'ModuleController@create')->name('module_add');
+			Route::get('module/delete/{id}', 'ModuleController@delete')->name('module_delete');
 
-			//users
-			Route::get('user/create', 'UserController@create')->name('user_create');
-			Route::post('user/add', 'UserController@add')->name('user_add');
-			Route::get('user/delete/{user}', 'UserController@delete')->name('user_delete');
-			Route::get('users', 'UserController@index')->name('users');
-			
 			//tests
-			Route::get('attempt/{test}/{user}', 'TestController@attempt')->name('attempt');
+			Route::get('test/create/{group}', 'TestController@create')->name('test_create');
+			Route::post('test/add/{group}', 'TestController@add')->name('test_add');
+			Route::get('test/delete/{test}', 'TestController@delete')->name('test_delete');
+			Route::group(['middleware' => 'system'], function(){
+				//groups
+				Route::get('group/create', 'GroupController@create')->name('group_create');
+				Route::post('group/add', 'GroupController@add')->name('group_add');
+				Route::get('group/delete/{group}', 'GroupController@delete')->name('group_delete');
+				Route::get('group/{group}/update', 'GroupController@update')->name('group_update');
+				Route::post('group/{group}/change', 'GroupController@change')->name('group_change');
+
+				//users
+				Route::get('user/create', 'UserController@create')->name('user_create');
+				Route::post('user/add', 'UserController@add')->name('user_add');
+				Route::get('user/delete/{user}', 'UserController@delete')->name('user_delete');
+				Route::get('users', 'UserController@index')->name('users');
+			});
 		});
 	});
 });

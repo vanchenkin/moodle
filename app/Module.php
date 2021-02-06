@@ -16,4 +16,9 @@ class Module extends Model
     {
         return $this->hasMany('App\Task');
     }
+
+    public function count()
+    {
+    	return $this->tasks()->count();
+    }
 }

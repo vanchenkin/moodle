@@ -59,15 +59,18 @@ class TestController extends Controller
 		$start = Carbon::parse($request->input('start'));
 		$end = Carbon::parse($request->input('end'));
 		$modules = Module::with('tasks')->find($request->input('modules'));
+		$fast_result = $request->input('fast_result');
+		if(!$fast_result) $fast_result = false;
+		else $fast_result = true;
 		$count = $request->input('count');
-        if($start->lessThan($end) && count($modules) == count($request->input('modules'))){
+        if(!$start->greaterThan($end) && count($modules) == count($request->input('modules'))){
         	foreach($modules as $module){
 	        	if(!array_key_exists($module->id, $count))
-	        		return redirect()->route('tests')->with('status', 'Ошибка 1!');
+	        		return redirect()->route('test_create', $group)->with('status', 'Модуля не существует!');
 	        	if($count[$module->id] == null)
             		$count[$module->id] = $module->tasks()->count();
 	        	if($module->tasks()->count() < $count[$module->id])
-	        		return redirect()->route('tests')->with('status', 'Ошибка 2!');
+	        		return redirect()->route('test_create', $group)->with('status', 'Число вопросов больше чем в модуле!');
         	}
             $test = new Test;
             $test->name = $request->input('name');
@@ -75,12 +78,13 @@ class TestController extends Controller
             $test->end = $end;
             $test->duration = $request->input('duration');
             $test->group_id = $group->id;
+            $test->fast_result = $fast_result;
             $test->save();
             foreach($modules as $module)
             	$test->modules()->attach($module, ['count' => $count[$module->id]]);
             return redirect()->route('tests')->with('status', 'Тест успешно добавлен!');
         }
-        return redirect()->route('tests')->with('status', 'Начало позже конца!');
+        return redirect()->route('test_create', $group)->with('status', 'Начало позже конца!');
 	}
 
 	public function test(Test $test)
@@ -111,7 +115,7 @@ class TestController extends Controller
 				if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now())){
 					$status = 2;
 					$remain = $end->diffInSeconds(Carbon::now());
-				}else if($test->end->greaterThan(Carbon::now())){
+				}else if(!$test->fast_result && $test->end->greaterThan(Carbon::now())){
 					$status = 3;
 				}else{
 					foreach($tasks as $task){
@@ -160,34 +164,40 @@ class TestController extends Controller
 				$attempt->start = Carbon::now();
 				$attempt->save();
 				foreach($test->modules as $module){
-					$tasks = $module->tasks->all();
-					$nums = array_rand($tasks, $module->pivot->count);
-					if(!is_array($nums))
-						$nums = array($nums);
-					foreach($nums as $num)
-						$attempt->tasks()->attach($tasks[$num]);
+					$count = $module->count();
+					if($count){
+						$tasks = $module->tasks->all();
+						$count = min($count, $module->pivot->count);
+						$nums = array_rand($tasks, $count);
+						if(!is_array($nums))
+							$nums = array($nums);
+						foreach($nums as $num)
+							$attempt->tasks()->attach($tasks[$num]);
+					}
 				}
-				return redirect()->route('test', $test)->with('status', 'Вы начали тест!');
+				return redirect()->route('test', $test)->with('status', 'Вы начали тестирование!');
 			}
 		}
 	}
 
 	public function end(Request $request, Attempt $attempt){
-		$start = $attempt->start;
-		$end = $attempt->start->addMinutes($attempt->test->duration)->minimum($attempt->test->end);
-		if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now()) && Auth::user()->attempts()->find($attempt)){
-			$answers = $request->input('answers');
-			foreach($answers as $id=>$answer){
-				if($answer == null) $answer = '';
-				$task = $attempt->tasks()->find($id);
-				$task->pivot->answer = $answer;
-				$task->pivot->save();
+		if(Auth::user()->role == 'STUDENT' && $attempt->user == Auth::user()){
+			$start = $attempt->start;
+			$end = $attempt->start->addMinutes($attempt->test->duration)->minimum($attempt->test->end);
+			if($attempt->end == null && $start->lessThan(Carbon::now()) && $end->greaterThan(Carbon::now()) && Auth::user()->attempts()->find($attempt)){
+				$answers = $request->input('answers');
+				foreach($answers as $id=>$answer){
+					if($answer == null) $answer = '';
+					$task = $attempt->tasks()->find($id);
+					$task->pivot->answer = $answer;
+					$task->pivot->save();
+				}
+				$attempt->end = Carbon::now();
+				$attempt->save();
+				return redirect()->route('test', $attempt->test)->with('status', 'Вы завершили тестирование!');
 			}
-			$attempt->end = Carbon::now();
-			$attempt->save();
-			return redirect()->route('test', $attempt->test)->with('status', 'Вы завершили тест!');
+			return redirect()->route('test', $attempt->test)->with('status', 'Тестирование уже завершено!');
 		}
-		return redirect()->route('test', $attempt->test)->with('status', 'Тест уже завершён!');
 	}
 
 	public function attempt(Request $request, Test $test, User $user){
@@ -209,4 +219,9 @@ class TestController extends Controller
 		}
 		return redirect()->route('test', $test)->with('status', 'Попытка не найдена!');
 	}
+
+	public function delete(Request $request, Test $test){
+        $test->delete();
+        return redirect()->route('tests')->with('status', 'Тест удалён!');
+    }
 }

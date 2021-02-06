@@ -13,7 +13,7 @@ class ModuleController extends Controller
 	    	$module->delete();
 	    	return redirect()->route('tasks')->with('status', 'Модуль удален!');
 	    }
-	    return redirect()->route('tasks')->with('status', 'Ошибка!');
+	    return redirect()->route('tasks')->with('status', 'Модуль не найден!');
     }
 
     public function create(Request $request)
@@ -23,7 +23,7 @@ class ModuleController extends Controller
     		Module::create(['name' => $name]);
     		return redirect()->route('tasks')->with('status', 'Модуль успешно добавлен!');
     	}else{
-    		return redirect()->route('tasks')->with('status', 'Ошибка!');
+    		return redirect()->route('tasks')->with('status', 'Пустое имя модуля!');
     	}
     }
 

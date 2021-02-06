@@ -5,21 +5,20 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header">Добавление задания в модуль {{ $module->name }}</div>
+                <div class="card-header">Просмотр задания</div>
                 <div class="card-body">
                     @if(Session::has('status'))
                         <div class="alert alert-info">
                             {{ Session::get('status')}}
                         </div>
                     @endif
-                   <form action="{{ route('task_add', $module) }}" method="POST">
+                   <form>
                         @csrf
                         <div><label for="text">Текст задания: </label></div>
                         <div class="task-textarea">
-                            <textarea class="" id="text" name="text" placeholder="Введите текст задания" required></textarea>
+                            <textarea class="" id="text" name="text" disabled>{{ $task->text }}</textarea>
                         <div>
-                        <label for="answer">Ответ: </label><input required class="task-answer" id="answer" name="answer" type="text" placeholder="Введите ответ на задание">
-                        <input type="submit" value="Добавить">
+                        <label for="answer">Ответ: </label><input required class="task-answer" id="answer" name="answer" type="text" value="{{ $task->answer }}" disabled>
                    </form>
                 </div>
             </div>

@@ -12,10 +12,17 @@ class MainController extends Controller
 		if(Auth::check()){
 			$role = Auth::user()->role;
 			if($role == 'STUDENT')
-				return view('student');
-			else
+				return redirect()->route('tests');
+			elseif($role == 'ADMIN')
 				return view('admin');
+			else
+				return view('system');
 		}
 		return view('index');
+	}
+
+	public function denied()
+	{
+		return view('denied');
 	}
 }
