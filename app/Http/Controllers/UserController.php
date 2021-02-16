@@ -44,7 +44,8 @@ class UserController extends Controller
     }
 
     public function delete(Request $request, User $user){
-        $user->delete();
+        if($user != $request->user())
+            $user->delete();
         return redirect()->route('users')->with('status', 'Пользователь удален!');
     }
 }
