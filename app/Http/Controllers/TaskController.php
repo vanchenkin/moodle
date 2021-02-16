@@ -24,7 +24,7 @@ class TaskController extends Controller
     {
         $text = $request->input('text');
         $answer = $request->input('answer');
-        if($text && $answer){
+        if(strlen($text) && strlen($answer)){
             Task::create(['text' => $text, 'answer' => $answer, 'module_id' => $module->id]);
             return redirect()->route('tasks')->with('status', 'Задание успешно добавлено!');
         }
@@ -44,7 +44,7 @@ class TaskController extends Controller
     {
         $text = $request->input('text');
         $answer = $request->input('answer');
-        if($text && $answer){
+        if(strlen($text) && strlen($answer)){
             $task->text = $text;
             $task->answer= $answer;
             $task->save();

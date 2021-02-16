@@ -27,7 +27,7 @@ class GroupController extends Controller
 	public function add(Request $request)
     {
     	$name = $request->input('name');
-    	if($name){
+    	if(strlen($name)){
     		Group::create(['name' => $name]);
     		return redirect()->route('groups')->with('status', 'Группа успешно добавлена!');
     	}else{
