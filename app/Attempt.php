@@ -21,4 +21,8 @@ class Attempt extends Model
     {
         return $this->belongsTo('App\Test');
     }
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

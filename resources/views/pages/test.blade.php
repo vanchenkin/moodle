@@ -25,20 +25,21 @@
                     	<form id="test-form" action="{{ route('test_end', $attempt) }}" method="POST">
                     		@csrf
 	                    	@foreach($tasks as $task)
-	                    		<div class="task">
+	                    		<div class="task card-body">
 	                    			<div class="pre">{{ $task->text }}</div>
 	                    			<input type="text" name="answers[{{ $task->id }}]" placeholder="Ответ">
 	                    		</div>
 	                    	@endforeach
 	                    	<input type="submit" value="Завершить">
-	                    	<div>Тест автоматически завершится по истечении времени. Ответы не сохраняются</div>
+	                    	<div>Дробные числа вводить через запятую.</div>
+	                    	<div>Тест автоматически завершится по истечении времени. Ответы не сохраняются.</div>
 	                    </form>
                     @elseif($status == 3)
                     	<div>Для просмотра результатов дождитесь окончания тестирования.</div>
                     @elseif($status == 4)
                     	<div>Результат: {{ $sum }} из {{ $count }}</div>
                     	@foreach($tasks as $task)
-                    		<div class="task">
+                    		<div class="task card-body">
                     			<div class="pre">{{ $task->text }}</div>
                     			<div>Ответ: {{ $task->yanswer }}</div>
                     			<div>Правильный ответ: {{ $task->answer }}</div>

@@ -17,7 +17,7 @@
                     <div class="">Результаты:</div>
                     <div>Результат: {{ $sum }} из {{ $count }}</div>
                     @foreach($tasks as $task)
-                        <div class="task">
+                        <div class="task card-body">
                             <div class="pre">{{ $task->text }}</div>
                             <div>Ответ: {{ $task->yanswer }}</div>
                             <div>Правильный ответ: {{ $task->answer }}</div>
